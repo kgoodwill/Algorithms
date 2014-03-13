@@ -17,7 +17,7 @@ class LCS{
 
 		//Public Functions
 		void find_lcs();
-		string print_lcs(int i, int j);
+		void print_lcs(int i, int j);
 		int get_Rows();
 		int get_Columns();
 		string get_LCS();
@@ -32,7 +32,7 @@ class LCS{
 		int** directions;
 		char* inputA;
 		char* inputB;
-		string lcs;
+		char* lcs;
 };
 
 //Default Constructor
@@ -44,8 +44,8 @@ LCS::LCS() : inputA(nullptr), inputB(nullptr), inputASize(1), inputBSize(1), row
 LCS::LCS(int rows, int columns, int inputSize1, int inputSize2, char* aIn, char* bIn) : inputA(aIn), inputB(bIn), inputASize(inputSize1), inputBSize(inputSize2), rows(rows), columns(columns){
 	values = new int*[rows];
 	for(int i=0; i<rows; i++){values[i] = new int[columns];}
-	directions = new int*[rows-1];
-	for(int i=1; i<rows; i++){directions[i] = new int[columns];}
+	directions = new int*[rows];
+	for(int i=0; i<rows; i++){directions[i] = new int[columns];}
 }
 
 LCS::~LCS(){
@@ -61,50 +61,53 @@ void LCS::find_lcs(){
 	for(int i=0; i<rows; i++){values[i][0] = 0;}
 	for(int i=0; i<columns; i++){values[0][i] = 0;}
 
+	for(int i=0; i<rows; i++){directions[i][0] = 0;}
+	for(int i=0; i<columns; i++){directions[0][i] = 0;}
+
 	/*for(int i=0; i<rows; i++){cout << values[i][0] << " ";}
 	cout << endl;
 	for(int i=0; i<columns; i++){cout << values[0][i] << endl;}*/
 
 	for(int i=1; i<=inputASize; i++){
 		for(int j=1; j<=inputBSize; j++){
-			cout << "x[i]: " << inputA[i-1] << " " << i << endl;
-			cout << "y[j]: " << inputB[j-1] << " " << j << endl;
-			cout << endl;
+			//cout << "x[i]: " << inputA[i-1] << " " << i << endl;
+			//cout << "y[j]: " << inputB[j-1] << " " << j << endl;
+			//cout << endl;
 			if(inputA[i-1] == inputB[j-1]){
 				values[i][j] = (values[i-1][j-1] + 1);
 				directions[i][j] = 2;
-				cout << "Found Match: " << values[i][j] << endl;
-				cout << "Direction: " << directions[i][j] << endl;
+				//cout << "Found Match: " << values[i][j] << endl;
+				//cout << "Direction: " << directions[i][j] << endl;
 			}
 			else if(values[i-1][j] >= values[i][j-1]){
 				values[i][j] = values[i-1][j];
-				cout << values[i][j] << endl;
+				//cout << values[i][j] << endl;
 				directions[i][j] = 3;
-				cout << "Direction: " << directions[i][j] << endl;
+				//cout << "Direction: " << directions[i][j] << endl;
 			}
 			else{
 				values[i][j] = values[i][j-1];
-				cout << values[i][j] << endl;
+				//cout << values[i][j] << endl;
 				directions[i][j] = 1;
-				cout << "Direction: " << directions[i][j] << endl;
+				//cout << "Direction: " << directions[i][j] << endl;
 			}
 		}
 	}
 }
 
-string LCS::print_lcs(int i, int j){
-	cout << "i: " << i << endl;
-	cout << "j: " << j << endl;
+void LCS::print_lcs(int i, int j){
+	//cout << "i: " << i << endl;
+	//cout << "j: " << j << endl;
 	if (i == 0 || j == 0){
-		return "";
+		return;
 	}
 	//cout << directions[i][j] << endl;
 	if (directions[i][j] == 2){
 		//cout << "HERE" << endl;
 		//cout << directions[i][j] << endl;
 		//cout << " " << inputA[i];
-		return (print_lcs(i-1, j-1) + inputA[i]);
-		//cout << " " << inputA[i] << endl;
+		print_lcs(i-1, j-1);
+		cout << " " << inputA[i-1];
 	}
 	else if (directions[i][j] == 3){
 		print_lcs(i-1, j);
@@ -122,8 +125,8 @@ string get_input(ifstream* file){
 	int count = 0;
 	string line = "";
 	getline(*file, line);
-	cout << line << endl;
-	cout << "HERE " << line.length() << endl;
+	//cout << line << endl;
+	//cout << "HERE " << line.length() << endl;
 	return line;
 }
 
@@ -144,17 +147,17 @@ int main(int argc, char* argv[]){
 	string input2;
 	inFile1 >> input1;
 	inFile2 >> input2;
-	cout << input1 << endl;
-	cout << input2 << endl;
+	//cout << input1 << endl;
+	//cout << input2 << endl;
 	int inputALength = input1.length();
 	int inputBLength = input2.length();
-	cout << "x.length() - " << inputALength << endl;
-	cout << "y.length() - " << inputBLength << endl;	
+	//cout << "x.length() - " << inputALength << endl;
+	//cout << "y.length() - " << inputBLength << endl;	
 
 	int rowsize = inputALength + 1;
 	int colsize = inputBLength + 1;
-	cout << "rowsize - " << rowsize << endl;
-	cout << "colsize - " << colsize << endl;
+	//cout << "rowsize - " << rowsize << endl;
+	//cout << "colsize - " << colsize << endl;
 
 	char* cinput1 = (char*)input1.c_str();
 	char* cinput2 = (char*)input2.c_str();
@@ -165,7 +168,7 @@ int main(int argc, char* argv[]){
 	myLCS->find_lcs();
 	cout << "--LCS--" << endl;
 	myLCS->print_lcs(inputALength, inputBLength);
-	//cout << myLCS->get_LCS() << endl;
+	cout << endl;
 
 	return 0;
 }
