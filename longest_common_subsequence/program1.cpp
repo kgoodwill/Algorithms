@@ -17,9 +17,10 @@ class LCS{
 
 		//Public Functions
 		void find_lcs();
-		void print_lcs(int i, int j);
+		string print_lcs(int i, int j);
 		int get_Rows();
 		int get_Columns();
+		string get_LCS();
 
 	private:
 		//Data Members
@@ -31,6 +32,7 @@ class LCS{
 		int** directions;
 		char* inputA;
 		char* inputB;
+		string lcs;
 };
 
 //Default Constructor
@@ -52,6 +54,7 @@ LCS::~LCS(){
 
 int LCS::get_Rows(){return rows;}
 int LCS::get_Columns(){return columns;}
+string LCS::get_LCS(){return lcs;}
 
 void LCS::find_lcs(){
 	//Initialize row and column 0 of values matrix to 0
@@ -89,19 +92,19 @@ void LCS::find_lcs(){
 	}
 }
 
-void LCS::print_lcs(int i, int j){
+string LCS::print_lcs(int i, int j){
 	cout << "i: " << i << endl;
 	cout << "j: " << j << endl;
 	if (i == 0 || j == 0){
-		exit(0);
+		return "";
 	}
 	//cout << directions[i][j] << endl;
 	if (directions[i][j] == 2){
 		//cout << "HERE" << endl;
 		//cout << directions[i][j] << endl;
-		cout << " " << inputA[i] << " ";
-		print_lcs(i-1, j-1);
-		cout << " " << inputA[i] << endl;
+		//cout << " " << inputA[i];
+		return (print_lcs(i-1, j-1) + inputA[i]);
+		//cout << " " << inputA[i] << endl;
 	}
 	else if (directions[i][j] == 3){
 		print_lcs(i-1, j);
@@ -162,6 +165,7 @@ int main(int argc, char* argv[]){
 	myLCS->find_lcs();
 	cout << "--LCS--" << endl;
 	myLCS->print_lcs(inputALength, inputBLength);
+	//cout << myLCS->get_LCS() << endl;
 
 	return 0;
 }
