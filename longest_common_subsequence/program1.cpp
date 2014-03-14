@@ -1,10 +1,11 @@
-//Program 1 - Top Down w/ Memoization
+//Program 1 - Bottom Up
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <string.h>
 #include <ctime>
+#include <algorithm>
 
 using namespace std;
 
@@ -65,45 +66,20 @@ int LCS::get_Size(char in){
 }
 
 int LCS::find_lcs(){
-	int count = 0;
-	//Initialize row and column 0 of values matrix to 0
-	for(int i=0; i<rows; i++){values[i][0] = 0;}
-	for(int i=0; i<columns; i++){values[0][i] = 0;}
-
-	for(int i=0; i<rows; i++){directions[i][0] = 0;}
-	for(int i=0; i<columns; i++){directions[0][i] = 0;}
-
-	/*for(int i=0; i<rows; i++){cout << values[i][0] << " ";}
-	cout << endl;
-	for(int i=0; i<columns; i++){cout << values[0][i] << endl;}*/
-
-	for(int i=1; i<=inputASize; i++){
-		for(int j=1; j<=inputBSize; j++){
-			//cout << "x[i]: " << inputA[i-1] << " " << i << endl;
-			//cout << "y[j]: " << inputB[j-1] << " " << j << endl;
-			//cout << endl;
-			if(inputA[i-1] == inputB[j-1]){
-				values[i][j] = (values[i-1][j-1] + 1);
-				directions[i][j] = 2;
-				count++;
-				//cout << "Found Match: " << values[i][j] << endl;
-				//cout << "Direction: " << directions[i][j] << endl;
+	for(int i=inputASize; i>=0; i--){
+		for(int j=inputBSize; j>=0; j--){
+			if(inputA[i] == '\0' || inputB[j] == '\0'){
+				values[i][j] = 0;
 			}
-			else if(values[i-1][j] >= values[i][j-1]){
-				values[i][j] = values[i-1][j];
-				//cout << values[i][j] << endl;
-				directions[i][j] = 3;
-				//cout << "Direction: " << directions[i][j] << endl;
+			else if(inputA[i] == inputB[j]){
+				values[i][j] = 1 + values[i+1][j+1];
 			}
 			else{
-				values[i][j] = values[i][j-1];
-				//cout << values[i][j] << endl;
-				directions[i][j] = 1;
-				//cout << "Direction: " << directions[i][j] << endl;
+				values[i][j] = max(values[i+1][j], values[i][j+1]);
 			}
 		}
 	}
-	return count;
+	return values[0][0];
 }
 
 void LCS::print_lcs(int i, int j, ofstream* outfile){

@@ -67,22 +67,17 @@ int LCS::get_Size(char in){
 
 int LCS::find_lcs(int i, int j){
 	if(inputA[i] == '\0' || inputB[j] == '\0'){
-		cout << "Base" << endl;
 		return 0;
 	}
 	if(inputA[i] == inputB[j]){
-		cout << "Match" << endl;
 		return values[i][j] = find_lcs(i+1, j+1) + 1;
 	}
 	else{
-		cout << "Max" << endl;
 		return values[i][j] = max(find_lcs(i+1, j),find_lcs(i, j+1));
 	} 
 }
 
 void LCS::print_lcs(int i, int j, ofstream* outfile){
-	//cout << "i: " << i << endl;
-	//cout << "j: " << j << endl;
 	if (i == 0 || j == 0){
 		return;
 	}
@@ -153,21 +148,11 @@ int main(int argc, char* argv[]){
 	LCS* myLCS = new LCS(rowsize, colsize, inputALength, inputBLength, cinput1, cinput2);
 	int lcs_size = 0;
 	clock_t begin = clock();
-	//lcs_size = myLCS->find_lcs(inputALength, inputBLength);
 	lcs_size = myLCS->find_lcs(0, 0);
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin)/CLOCKS_PER_SEC;
 
-	/*if(myLCS->get_Rows() < 10 && myLCS->get_Columns() < 10){
-		myLCS->print_matrix(&outfile);
-		//myLCS->print_lcs(myLCS->get_Size('a'), myLCS->get_Size('b'), &outfile);
-		//outfile<<endl;
-		outfile << elapsed_secs << endl;
-	}*/
-	//else{
 	outfile << lcs_size << endl;
 	outfile << elapsed_secs << endl;
-	//}
-
 	return 0;
 }
