@@ -85,7 +85,6 @@ int LCS::find_lcs(){
 			if(inputA[i-1] == inputB[j-1]){
 				values[i][j] = (values[i-1][j-1] + 1);
 				directions[i][j] = 2;
-				count++;
 				//cout << "Found Match: " << values[i][j] << endl;
 				//cout << "Direction: " << directions[i][j] << endl;
 			}
@@ -185,13 +184,11 @@ int main(int argc, char* argv[]){
 	if(myLCS->get_Rows() < 10 && myLCS->get_Columns() < 10){
 		myLCS->print_matrix(&outfile);
 		myLCS->print_lcs(myLCS->get_Size('a'), myLCS->get_Size('b'), &outfile);
-		outfile << endl;
+		outfile<<endl;
 		outfile << elapsed_secs << endl;
 	}
-	else{
-		outfile << lcs_size << endl;
-		outfile << elapsed_secs << endl;
-	}
+	outfile << lcs_size << endl;
+	outfile << elapsed_secs << endl;
 
 	return 0;
 }

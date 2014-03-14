@@ -1,10 +1,11 @@
-//Program 1 - Top Down w/ Memoization
+//Recursive
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <string.h>
 #include <ctime>
+#include <algorithm>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ class LCS{
 		LCS(int rows, int columns, int size1, int size2, char* aIn, char* bIn);
 
 		//Public Functions
-		int find_lcs();
+		int find_lcs(int i, int j, int count);
 		void print_lcs(int i, int j, ofstream* outfile);
 		int get_Rows();
 		int get_Columns();
@@ -64,46 +65,13 @@ int LCS::get_Size(char in){
 	else{return -1;}
 }
 
-int LCS::find_lcs(){
-	int count = 0;
-	//Initialize row and column 0 of values matrix to 0
-	for(int i=0; i<rows; i++){values[i][0] = 0;}
-	for(int i=0; i<columns; i++){values[0][i] = 0;}
-
-	for(int i=0; i<rows; i++){directions[i][0] = 0;}
-	for(int i=0; i<columns; i++){directions[0][i] = 0;}
-
-	/*for(int i=0; i<rows; i++){cout << values[i][0] << " ";}
-	cout << endl;
-	for(int i=0; i<columns; i++){cout << values[0][i] << endl;}*/
-
-	for(int i=1; i<=inputASize; i++){
-		for(int j=1; j<=inputBSize; j++){
-			//cout << "x[i]: " << inputA[i-1] << " " << i << endl;
-			//cout << "y[j]: " << inputB[j-1] << " " << j << endl;
-			//cout << endl;
-			if(inputA[i-1] == inputB[j-1]){
-				values[i][j] = (values[i-1][j-1] + 1);
-				directions[i][j] = 2;
-				count++;
-				//cout << "Found Match: " << values[i][j] << endl;
-				//cout << "Direction: " << directions[i][j] << endl;
-			}
-			else if(values[i-1][j] >= values[i][j-1]){
-				values[i][j] = values[i-1][j];
-				//cout << values[i][j] << endl;
-				directions[i][j] = 3;
-				//cout << "Direction: " << directions[i][j] << endl;
-			}
-			else{
-				values[i][j] = values[i][j-1];
-				//cout << values[i][j] << endl;
-				directions[i][j] = 1;
-				//cout << "Direction: " << directions[i][j] << endl;
-			}
-		}
+int LCS::find_lcs(int i, int j, int count){
+	if(inputA[i] == inputB[j]){
+		count++;
+		values[i][j] = find_lcs(i-1, j-1, count) + 1;
 	}
-	return count;
+	else{values[i][j] = max(find_lcs(i-1, j, count),find_lcs(j-1, i, count));}
+	return count; 
 }
 
 void LCS::print_lcs(int i, int j, ofstream* outfile){
@@ -177,15 +145,16 @@ int main(int argc, char* argv[]){
 
 	//Create a LCS object
 	LCS* myLCS = new LCS(rowsize, colsize, inputALength, inputBLength, cinput1, cinput2);
+	int lcs_size = 0;
 	clock_t begin = clock();
-	int lcs_size = myLCS->find_lcs();
+	lcs_size += myLCS->find_lcs(myLCS->get_Rows(), myLCS->get_Columns(), lcs_size);
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin)/CLOCKS_PER_SEC;
 
 	if(myLCS->get_Rows() < 10 && myLCS->get_Columns() < 10){
 		myLCS->print_matrix(&outfile);
 		myLCS->print_lcs(myLCS->get_Size('a'), myLCS->get_Size('b'), &outfile);
-		outfile << endl;
+		outfile<<endl;
 		outfile << elapsed_secs << endl;
 	}
 	else{
