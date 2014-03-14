@@ -16,7 +16,8 @@ class LCS{
 		LCS(int rows, int columns, int size1, int size2, char* aIn, char* bIn);
 
 		//Public Functions
-		void find_lcs();
+		int find_lcs();
+		int subproblem(int i, int j);
 		void print_lcs(int i, int j);
 		int get_Rows();
 		int get_Columns();
@@ -56,19 +57,39 @@ int LCS::get_Rows(){return rows;}
 int LCS::get_Columns(){return columns;}
 string LCS::get_LCS(){return lcs;}
 
-void LCS::find_lcs(){
-	//Initialize row and column 0 of values matrix to 0
-	for(int i=0; i<rows; i++){values[i][0] = 0;}
-	for(int i=0; i<columns; i++){values[0][i] = 0;}
+int LCS::find_lcs(){
+	//Initialize values matrix to -1
+	for(int i=0; i<rows; i++){
+		for(int j=0; j<columns; j++){
+			values[i][j] = -1;
+		}
+	}
+	return subproblem(0,0);
+}
 
-	for(int i=0; i<rows; i++){directions[i][0] = 0;}
-	for(int i=0; i<columns; i++){directions[0][i] = 0;}
+int LCS::subproblem(int i, int j){
+	if(values[i][j] < 0){
+		cout << "HERE" << endl;
+		if(inputA[i] == '\0' || inputB[j] == '\0'){values[i][j] = 0;}
+		else if(inputA[i] == inputB[j]){
+			values[i][j] = 1 + subproblem(i+1, j+1);
+		}
+		else{
+			values[i][j] = max(subproblem(i+1, j), subproblem(i, j+1));
+		}
+	}
+	return values[i][j];
+}
+	//for(int i=0; i<columns; i++){values[0][i] = 0;}
+
+	//for(int i=0; i<rows; i++){directions[i][0] = 0;}
+	//for(int i=0; i<columns; i++){directions[0][i] = 0;}
 
 	/*for(int i=0; i<rows; i++){cout << values[i][0] << " ";}
 	cout << endl;
 	for(int i=0; i<columns; i++){cout << values[0][i] << endl;}*/
 
-	for(int i=1; i<=inputASize; i++){
+	/*for(int i=1; i<=inputASize; i++){
 		for(int j=1; j<=inputBSize; j++){
 			//cout << "x[i]: " << inputA[i-1] << " " << i << endl;
 			//cout << "y[j]: " << inputB[j-1] << " " << j << endl;
@@ -93,9 +114,9 @@ void LCS::find_lcs(){
 			}
 		}
 	}
-}
+}*/
 
-void LCS::print_lcs(int i, int j, ofstream* outfile){
+/*void LCS::print_lcs(int i, int j, ofstream* outfile){
 	//cout << "i: " << i << endl;
 	//cout << "j: " << j << endl;
 	if (i == 0 || j == 0){
@@ -115,7 +136,7 @@ void LCS::print_lcs(int i, int j, ofstream* outfile){
 	else{
 		print_lcs(i, j-1);
 	}
-}
+}*/
 
 
 
@@ -166,9 +187,10 @@ int main(int argc, char* argv[]){
 	//Create a LCS object
 	LCS* myLCS = new LCS(rowsize, colsize, inputALength, inputBLength, cinput1, cinput2);
 
-	myLCS->find_lcs();
+	int lcs_size = myLCS->find_lcs();
+	outfile << lcs_size << endl;
 	//cout << "--LCS--" << endl;
-	myLCS->print_lcs(inputALength, inputBLength);
+	//myLCS->print_lcs(inputALength, inputBLength);
 	//cout << myLCS->get_LCS() << endl;
 
 	return 0;
