@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -69,7 +70,6 @@ int LCS::find_lcs(){
 
 int LCS::subproblem(int i, int j){
 	if(values[i][j] < 0){
-		cout << "HERE" << endl;
 		if(inputA[i] == '\0' || inputB[j] == '\0'){values[i][j] = 0;}
 		else if(inputA[i] == inputB[j]){
 			values[i][j] = 1 + subproblem(i+1, j+1);
@@ -80,80 +80,18 @@ int LCS::subproblem(int i, int j){
 	}
 	return values[i][j];
 }
-	//for(int i=0; i<columns; i++){values[0][i] = 0;}
-
-	//for(int i=0; i<rows; i++){directions[i][0] = 0;}
-	//for(int i=0; i<columns; i++){directions[0][i] = 0;}
-
-	/*for(int i=0; i<rows; i++){cout << values[i][0] << " ";}
-	cout << endl;
-	for(int i=0; i<columns; i++){cout << values[0][i] << endl;}*/
-
-	/*for(int i=1; i<=inputASize; i++){
-		for(int j=1; j<=inputBSize; j++){
-			//cout << "x[i]: " << inputA[i-1] << " " << i << endl;
-			//cout << "y[j]: " << inputB[j-1] << " " << j << endl;
-			//cout << endl;
-			if(inputA[i-1] == inputB[j-1]){
-				values[i][j] = (values[i-1][j-1] + 1);
-				directions[i][j] = 2;
-				//cout << "Found Match: " << values[i][j] << endl;
-				//cout << "Direction: " << directions[i][j] << endl;
-			}
-			else if(values[i-1][j] >= values[i][j-1]){
-				values[i][j] = values[i-1][j];
-				//cout << values[i][j] << endl;
-				directions[i][j] = 3;
-				//cout << "Direction: " << directions[i][j] << endl;
-			}
-			else{
-				values[i][j] = values[i][j-1];
-				//cout << values[i][j] << endl;
-				directions[i][j] = 1;
-				//cout << "Direction: " << directions[i][j] << endl;
-			}
-		}
-	}
-}*/
-
-/*void LCS::print_lcs(int i, int j, ofstream* outfile){
-	//cout << "i: " << i << endl;
-	//cout << "j: " << j << endl;
-	if (i == 0 || j == 0){
-		return;
-	}
-	//cout << directions[i][j] << endl;
-	if (directions[i][j] == 2){
-		//cout << "HERE" << endl;
-		//cout << directions[i][j] << endl;
-		//cout << " " << inputA[i];
-		print_lcs(i-1, j-1);
-		cout << " " << inputA[i-1] << endl;
-	}
-	else if (directions[i][j] == 3){
-		print_lcs(i-1, j);
-	}
-	else{
-		print_lcs(i, j-1);
-	}
-}*/
-
-
-
-//int file_size(ifstream* file);
+	
 
 string get_input(ifstream* file){
 	int count = 0;
 	string line = "";
 	getline(*file, line);
-	//cout << line << endl;
-	//cout << "HERE " << line.length() << endl;
 	return line;
 }
 
 int main(int argc, char* argv[]){
 	if (argc != 4){
-		cout << "Correct Syntax: program1 <input_file_1> <input_file_2> <output_file>" << endl;
+		cout << "Correct Syntax: program3 <input_file_1> <input_file_2> <output_file>" << endl;
 		return -1;
 	}
 	ifstream inFile1 (argv[1]);
@@ -169,29 +107,20 @@ int main(int argc, char* argv[]){
 	string input2;
 	inFile1 >> input1;
 	inFile2 >> input2;
-	//cout << input1 << endl;
-	//cout << input2 << endl;
 	int inputALength = input1.length();
-	int inputBLength = input2.length();
-	//cout << "x.length() - " << inputALength << endl;
-	//cout << "y.length() - " << inputBLength << endl;	
-
+	int inputBLength = input2.length();	
 	int rowsize = inputALength + 1;
 	int colsize = inputBLength + 1;
-	//cout << "rowsize - " << rowsize << endl;
-	//cout << "colsize - " << colsize << endl;
-
 	char* cinput1 = (char*)input1.c_str();
 	char* cinput2 = (char*)input2.c_str();
 
 	//Create a LCS object
 	LCS* myLCS = new LCS(rowsize, colsize, inputALength, inputBLength, cinput1, cinput2);
-
+	clock_t t;
+	t = clock();
 	int lcs_size = myLCS->find_lcs();
+	t = clock() - t;
 	outfile << lcs_size << endl;
-	//cout << "--LCS--" << endl;
-	//myLCS->print_lcs(inputALength, inputBLength);
-	//cout << myLCS->get_LCS() << endl;
-
+	outfile << ((float)t)/CLOCKS_PER_SEC << endl;
 	return 0;
 }

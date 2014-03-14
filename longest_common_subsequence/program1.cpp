@@ -83,16 +83,10 @@ int LCS::find_lcs(){
 }
 
 void LCS::print_lcs(int i, int j, ofstream* outfile){
-	//cout << "i: " << i << endl;
-	//cout << "j: " << j << endl;
 	if (i == 0 || j == 0){
 		return;
 	}
-	//cout << directions[i][j] << endl;
 	if (directions[i][j] == 2){
-		//cout << "HERE" << endl;
-		//cout << directions[i][j] << endl;
-		//cout << " " << inputA[i];
 		print_lcs(i-1, j-1, outfile);
 		*outfile << " " << inputA[i-1];
 	}
@@ -111,19 +105,6 @@ void LCS::print_matrix(ofstream* outfile){
 		}
 		*outfile<<endl;
 	}
-}
-
-
-
-//int file_size(ifstream* file);
-
-string get_input(ifstream* file){
-	int count = 0;
-	string line = "";
-	getline(*file, line);
-	//cout << line << endl;
-	//cout << "HERE " << line.length() << endl;
-	return line;
 }
 
 int main(int argc, char* argv[]){

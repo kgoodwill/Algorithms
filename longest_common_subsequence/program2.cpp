@@ -22,8 +22,6 @@ class LCS{
 		int get_Rows();
 		int get_Columns();
 		string get_LCS();
-		int get_Size(char in);
-		void print_matrix(ofstream* outfile);
 
 	private:
 		//Data Members
@@ -59,12 +57,6 @@ int LCS::get_Rows(){return rows;}
 int LCS::get_Columns(){return columns;}
 string LCS::get_LCS(){return lcs;}
 
-int LCS::get_Size(char in){
-	if(in == 'a'){return inputASize;}
-	else if(in == 'b'){return inputBSize;}
-	else{return -1;}
-}
-
 int LCS::find_lcs(int i, int j){
 	if(inputA[i] == '\0' || inputB[j] == '\0'){
 		return 0;
@@ -81,11 +73,7 @@ void LCS::print_lcs(int i, int j, ofstream* outfile){
 	if (i == 0 || j == 0){
 		return;
 	}
-	//cout << directions[i][j] << endl;
 	if (directions[i][j] == 2){
-		//cout << "HERE" << endl;
-		//cout << directions[i][j] << endl;
-		//cout << " " << inputA[i];
 		print_lcs(i-1, j-1, outfile);
 		*outfile << " " << inputA[i-1];
 	}
@@ -97,31 +85,9 @@ void LCS::print_lcs(int i, int j, ofstream* outfile){
 	}
 }
 
-void LCS::print_matrix(ofstream* outfile){
-	for(int i=0; i<rows; i++){
-		for(int j=0; j<columns; j++){
-			*outfile << values[i][j] << " ";
-		}
-		*outfile<<endl;
-	}
-}
-
-
-
-//int file_size(ifstream* file);
-
-string get_input(ifstream* file){
-	int count = 0;
-	string line = "";
-	getline(*file, line);
-	//cout << line << endl;
-	//cout << "HERE " << line.length() << endl;
-	return line;
-}
-
 int main(int argc, char* argv[]){
 	if (argc != 4){
-		cout << "Correct Syntax: program1 <input_file_1> <input_file_2> <output_file>" << endl;
+		cout << "Correct Syntax: program2 <input_file_1> <input_file_2> <output_file>" << endl;
 		return -1;
 	}
 	ifstream inFile1 (argv[1]);
@@ -151,7 +117,6 @@ int main(int argc, char* argv[]){
 	lcs_size = myLCS->find_lcs(0, 0);
 	clock_t end = clock();
 	double elapsed_secs = double(end - begin)/CLOCKS_PER_SEC;
-
 	outfile << lcs_size << endl;
 	outfile << elapsed_secs << endl;
 	return 0;
