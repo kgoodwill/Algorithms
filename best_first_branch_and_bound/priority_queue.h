@@ -17,14 +17,15 @@ public:
 	P_Queue(Node* array, int arraySize);
 	~P_Queue();
 	void push(Node* node);
-	int pop();
-	Node* getQueue();
+	Node* pop();
+	bool isEmpty();
 
 private:
 	//Data Members
 	Node* p_Queue; //an array of nodes
 	//Functions
 	Node* buildMaxHeap(Node* nodeArray, int arraySize);
+	void clearMaxHeap();
 	void maxHeapify(Node* A, int i, int n);
 	inline int getLeft(int i);
 	inline int getRight(int i);

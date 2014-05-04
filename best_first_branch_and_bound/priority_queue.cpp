@@ -11,10 +11,13 @@ P_Queue::P_Queue(){
 P_Queue::P_Queue(Node* array, int arraySize){
 	// p_Queue = new Node[(2**arraySize)-1];
 	p_Queue = buildMaxHeap(array, arraySize);
+	// for(int i = 0; i < arraySize; i++){
+	// 	cout << p_Queue[i].get_weight() << endl;
+	// }
 }
 
 P_Queue::~P_Queue(){
-
+	clearMaxHeap();
 }
 
 /* Private Methods for PQ */
@@ -22,17 +25,23 @@ void P_Queue::push(Node* node){
 
 }
 
-int P_Queue::pop(){
+Node* P_Queue::pop(){
 	return 0;
 }
 
 Node* P_Queue::buildMaxHeap(Node* nodeArray, int arraySize){
-	Node* returnArray = new Node[(int)pow(2, arraySize) - 1];
-	for(int i = floor(arraySize/2); i > 1; i--){
-		maxHeapify(nodeArray, i, arraySize);
-	}
+	int returnSize = pow(2, arraySize) - 1;
+	cout << "returnSize = " << returnSize << endl;
+	Node* returnArray = new Node[returnSize];
+	//Add elements from nodeArray to returnArray(aka priority_queue)
 	for(int i = 0; i < arraySize; i++){
 		returnArray[i] = nodeArray[i];
+	}
+	for(int i = floor(returnSize/2); i > 1; i--){
+		maxHeapify(returnArray, i, returnSize);
+	}
+	for(int i = 0; i < returnSize; i++){
+		cout << returnArray[i].get_ratio() << endl;
 	}
 	return returnArray;
 }
@@ -103,6 +112,17 @@ inline int P_Queue::getParent(int i){
 	return floor(i/2);
 }
 
-Node* P_Queue::getQueue(){
-	return &p_Queue;
+void P_Queue::clearMaxHeap(){
+	//Keeping popping and discarding nodes until empty
+	Node* dummy;
+	while(!isEmpty()){
+		dummy = pop();
+	}
+}
+
+bool P_Queue::isEmpty(){
+	if(p_Queue[0].get_weight() == 0){
+		return false;
+	}
+	else{return true;}
 }

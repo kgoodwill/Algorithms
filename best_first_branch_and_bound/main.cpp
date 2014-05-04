@@ -45,20 +45,16 @@ int main(int argc, char* argv[]){
 		i++;
 	}
 
+
 	//Sort the itemList by non-increasing profit/weight ratio
 
 	//Create an empty priority queue
 	P_Queue* pq = new P_Queue(itemList, numItems);
 
-	cout << "Item - " << "Profit - " << "Weight - " << "Bound" << endl;
-	for(int i = 0; i < numItems; i++){
-		cout << i << "-" << pq->p_Queue[i].get_profit() << "-" << pq[i].get_weight() << "-" << pq[i].get_bound() << endl;
-	}
-
 	//Need to calculate the bound of each node in the priority queue
 
 
-	infile.close();
-	outfile.close();
+	//infile.close();
+	//outfile.close();
 	return 0;
 }
