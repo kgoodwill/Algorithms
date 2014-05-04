@@ -1,10 +1,10 @@
-//Program 1 - Bottom Up
+//Program 1 - Bottom Up LCS Solution
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <string.h>
-#include <ctime>
 #include <algorithm>
 
 using namespace std;
@@ -18,12 +18,11 @@ class LCS{
 
 		//Public Functions
 		int find_lcs();
-		void print_lcs(int i, int j, ofstream* outfile);
+		int subproblem(int i, int j);
+		void print_lcs(int i, int j);
 		int get_Rows();
 		int get_Columns();
 		string get_LCS();
-		int get_Size(char in);
-		void print_matrix(ofstream* outfile);
 
 	private:
 		//Data Members
@@ -59,57 +58,40 @@ int LCS::get_Rows(){return rows;}
 int LCS::get_Columns(){return columns;}
 string LCS::get_LCS(){return lcs;}
 
-int LCS::get_Size(char in){
-	if(in == 'a'){return inputASize;}
-	else if(in == 'b'){return inputBSize;}
-	else{return -1;}
-}
-
 int LCS::find_lcs(){
-	for(int i=inputASize; i>=0; i--){
-		for(int j=inputBSize; j>=0; j--){
-			if(inputA[i] == '\0' || inputB[j] == '\0'){
-				values[i][j] = 0;
-			}
-			else if(inputA[i] == inputB[j]){
-				values[i][j] = 1 + values[i+1][j+1];
-			}
-			else{
-				values[i][j] = max(values[i+1][j], values[i][j+1]);
-			}
-		}
-	}
-	return values[0][0];
-}
-
-void LCS::print_lcs(int i, int j, ofstream* outfile){
-	if (i == 0 || j == 0){
-		return;
-	}
-	if (directions[i][j] == 2){
-		print_lcs(i-1, j-1, outfile);
-		*outfile << " " << inputA[i-1];
-	}
-	else if (directions[i][j] == 3){
-		print_lcs(i-1, j, outfile);
-	}
-	else{
-		print_lcs(i, j-1, outfile);
-	}
-}
-
-void LCS::print_matrix(ofstream* outfile){
+	//Initialize values matrix to -1
 	for(int i=0; i<rows; i++){
 		for(int j=0; j<columns; j++){
-			*outfile << values[i][j] << " ";
+			values[i][j] = -1;
 		}
-		*outfile<<endl;
 	}
+	return subproblem(0,0);
+}
+
+int LCS::subproblem(int i, int j){
+	if(values[i][j] < 0){
+		if(inputA[i] == '\0' || inputB[j] == '\0'){values[i][j] = 0;}
+		else if(inputA[i] == inputB[j]){
+			values[i][j] = 1 + subproblem(i+1, j+1);
+		}
+		else{
+			values[i][j] = max(subproblem(i+1, j), subproblem(i, j+1));
+		}
+	}
+	return values[i][j];
+}
+	
+
+string get_input(ifstream* file){
+	int count = 0;
+	string line = "";
+	getline(*file, line);
+	return line;
 }
 
 int main(int argc, char* argv[]){
 	if (argc != 4){
-		cout << "Correct Syntax: program1 <input_file_1> <input_file_2> <output_file>" << endl;
+		cout << "Correct Syntax: program3 <input_file_1> <input_file_2> <output_file>" << endl;
 		return -1;
 	}
 	ifstream inFile1 (argv[1]);
@@ -117,8 +99,8 @@ int main(int argc, char* argv[]){
 	ofstream outfile (argv[3]);
 
 	//Determine the size of each file
-	if (!inFile1.is_open() || !inFile2.is_open() || !outfile.is_open()){
-		cout << "ERROR: One of the files doesn't exist" << endl;
+	if (!inFile1.is_open() || !inFile2.is_open()){
+		cout << "ERROR: One of the input files doesn't exist" << endl;
 		return -2;
 	}
 	string input1;
@@ -134,21 +116,11 @@ int main(int argc, char* argv[]){
 
 	//Create a LCS object
 	LCS* myLCS = new LCS(rowsize, colsize, inputALength, inputBLength, cinput1, cinput2);
-	clock_t begin = clock();
+	clock_t t;
+	t = clock();
 	int lcs_size = myLCS->find_lcs();
-	clock_t end = clock();
-	double elapsed_secs = double(end - begin)/CLOCKS_PER_SEC;
-
-	if(myLCS->get_Rows() < 10 && myLCS->get_Columns() < 10){
-		myLCS->print_matrix(&outfile);
-		myLCS->print_lcs(myLCS->get_Size('a'), myLCS->get_Size('b'), &outfile);
-		outfile << endl;
-		outfile << elapsed_secs << endl;
-	}
-	else{
-		outfile << lcs_size << endl;
-		outfile << elapsed_secs << endl;
-	}
-
+	t = clock() - t;
+	outfile << lcs_size << endl;
+	outfile << ((float)t)/CLOCKS_PER_SEC << endl;
 	return 0;
 }
