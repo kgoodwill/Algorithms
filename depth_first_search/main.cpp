@@ -75,6 +75,7 @@ public:
 	void printAdj();
 };
 
+//Constructor for the Graph
 Graph::Graph(int V){
 	numVertex = V;
 	adj = new list<int>[numVertex+1];
@@ -85,6 +86,7 @@ Graph::Graph(int V){
 	}
 }
 
+//Adds an edge to the graph
 void Graph::addEdge(int v, int w){
 	if(nodes[v].getColor() != WHITE){
 		nodes[v].changeColor(WHITE);
@@ -93,19 +95,16 @@ void Graph::addEdge(int v, int w){
 		nodes[w].changeColor(WHITE);
 	}
 	adj[v].push_back(w);
-	//cout << "Edge " << v << "," << w << " added" << endl;
 }
 
+//Adds a node to the graph
 void Graph::addNode(int spot){
 	if(nodes[spot].getColor() == NONE){
 		nodes[spot].changeColor(WHITE);	
-		//cout << "Node added at: " << spot << endl;
-	}
-	else{
-		//cout << "Node already exists" << endl;
 	}
 }
 
+//Starts the DFS
 void Graph::DFS(){
 	TIME = 0;
 	for(int i = 1; i < numVertex+1; i++){
@@ -115,18 +114,14 @@ void Graph::DFS(){
 	}
 }
 
+//Does the bulk of the work
 void Graph::DFS_VISIT(int u){
 	TIME = TIME + 1;
 	nodes[u].setDTime(TIME);
 	nodes[u].changeColor(GRAY);
-	//cout << "Node: " << u << " Discovery Time: " << TIME << " Color: " << nodes[u].getColor() << endl;
-	// cout << "List Size at " << u << ": " << adj[u].size() << endl;
 	list<int>::iterator v;
 	for(v = adj[u].begin(); v != adj[u].end(); v++){
-		// cout << *v << endl;
-		// cout << "Color: " << nodes[*v].getColor() << endl;
 		if(nodes[*v].getColor() == WHITE){
-			// cout << "WHITE node found" << endl;
 			nodes[*v].setParent(nodes[u]);
 			DFS_VISIT(*v);
 		}
@@ -134,7 +129,6 @@ void Graph::DFS_VISIT(int u){
 	nodes[u].changeColor(BLACK);
 	TIME = TIME + 1;
 	nodes[u].setFTime(TIME);
-	// cout << "Node: " << u << " Finish Time: " << TIME << " Color: " << nodes[u].getColor() << endl;
 }
 
 //Prints the traversal to the screen
@@ -145,6 +139,7 @@ void Graph::printTraversal(){
 	}
 }
 
+//Prints out the adjacency list for the graph
 void Graph::printAdj(){
 	for(int i = 0; i < numVertex+1; i++){
 		cout << i << ": ";
@@ -158,22 +153,18 @@ void Graph::printAdj(){
 
 int main(int argc, char* argv[]){
 	if(argc != 3)
-
 	{
 		cout << "Usage Error: ./DepthFirstSearch <input_file> <output_file>" << endl;
 		return -1;
 	}
-
 	ifstream inFile;
 	ofstream outFile;
 	inFile.open(argv[1]);
 	outFile.open(argv[2]);
-
 	string myString;
 	stringstream myStream;
 	int sizeList;
 	char dummyVar; 
-
 	if(!inFile.is_open() || !outFile.is_open()){
 		cout << "Unable to open one of the files" << endl;
 		return -2;
@@ -182,10 +173,7 @@ int main(int argc, char* argv[]){
 	myStream << myString;
 	myStream >> sizeList;
 	myStream.clear();
-
-	//Create a graph
 	Graph* graph = new Graph(sizeList);
-
 	int place = 0;
 	while(!inFile.eof()){
 		myStream.clear();
@@ -197,20 +185,13 @@ int main(int argc, char* argv[]){
 		graph->addEdge(start_pos, end_pos);
 		graph->addNode(start_pos);
 	}
-
 	chrono::steady_clock::time_point start, finish;
 	chrono::nanoseconds elapsed;
-
 	graph->printAdj();
-
 	start = chrono::steady_clock::now();
-
 	graph->DFS();
-
 	finish = chrono::steady_clock::now();
-
 	graph->printTraversal();
-
 	elapsed = chrono::duration_cast<chrono::nanoseconds>(finish-start);
 	cout << elapsed.count() << " nanoseconds"<< endl;
 
