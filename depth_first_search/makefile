@@ -1,4 +1,4 @@
-GXX = g++ -g
+GXX = g++ -g -std=c++0x
 
 all: DepthFirstSearch
 

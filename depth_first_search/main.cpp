@@ -5,7 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include <list>
-#include <time.h>
+#include <chrono>
 
 using namespace std;
 
@@ -198,13 +198,21 @@ int main(int argc, char* argv[]){
 		graph->addNode(start_pos);
 	}
 
+	chrono::monotonic_clock::time_point start, finish;
+	chrono::nanoseconds elapsed;
+
 	graph->printAdj();
-	clock_t t;
-	t = clock();
+
+	start = chrono::monotonic_clock::now();
+
 	graph->DFS();
-	t = clock() - t;
+
+	finish = chrono::monotonic_clock::now();
+
 	graph->printTraversal();
-	cout << "Time: " << (float)t << endl;
+
+	elapsed = chrono::duration_cast<chrono::nanoseconds>(finish-start);
+	cout << elapsed.count() << " nanoseconds"<< endl;
 
 	return 0;
 }
