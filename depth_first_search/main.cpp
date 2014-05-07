@@ -198,16 +198,16 @@ int main(int argc, char* argv[]){
 		graph->addNode(start_pos);
 	}
 
-	chrono::monotonic_clock::time_point start, finish;
+	chrono::steady_clock::time_point start, finish;
 	chrono::nanoseconds elapsed;
 
 	graph->printAdj();
 
-	start = chrono::monotonic_clock::now();
+	start = chrono::steady_clock::now();
 
 	graph->DFS();
 
-	finish = chrono::monotonic_clock::now();
+	finish = chrono::steady_clock::now();
 
 	graph->printTraversal();
 
